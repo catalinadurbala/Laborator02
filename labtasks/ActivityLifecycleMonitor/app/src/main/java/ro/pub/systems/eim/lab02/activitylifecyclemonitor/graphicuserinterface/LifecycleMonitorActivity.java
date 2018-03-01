@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 
@@ -53,6 +54,30 @@ public class LifecycleMonitorActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        CheckBox cb = (CheckBox) findViewById(R.id.remember_me_checkbox);
+        outState.putBoolean(Constants.CREDENTIAL_TAG, cb.isChecked());
+        if (cb.isChecked()) {
+            EditText usr = (EditText) findViewById(R.id.username_edit_text);
+            EditText pwd = (EditText) findViewById(R.id.password_edit_text);
+            outState.putString(Constants.USERNAME_TAG, usr.getText().toString());
+            outState.putString(Constants.PASSWORD_TAG, pwd.getText().toString());
+        }
+        super.onSaveInstanceState(outState);
+
+    }
+/*
+    @Override
+    public void onRestoreInstanceState(Bundle inState) {
+        if (inState.getBoolean(Constants.CREDENTIAL_TAG)) {
+            EditText usr = (EditText) findViewById(R.id.username_edit_text);
+            EditText pwd = (EditText) findViewById(R.id.password_edit_text);
+            usr.setText(inState.getString(Constants.USERNAME_TAG));
+            pwd.setText(inState.getString(Constants.PASSWORD_TAG));
+        }
+    }
+*/
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lifecycle_monitor);
@@ -62,7 +87,58 @@ public class LifecycleMonitorActivity extends AppCompatActivity {
         Button cancelButton = (Button) findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(buttonClickListener);
 
-        Log.d(Constants.TAG, "onCreate() method was invoked without a previous state");
+        if (savedInstanceState == null) {
+            Log.d(Constants.TAG, "onCreate() method was invoked *without* a previous state");
+        } else {
+            if (savedInstanceState.getBoolean(Constants.CREDENTIAL_TAG)) {
+                EditText usr = (EditText) findViewById(R.id.username_edit_text);
+                EditText pwd = (EditText) findViewById(R.id.password_edit_text);
+                usr.setText(savedInstanceState.getString(Constants.USERNAME_TAG));
+                pwd.setText(savedInstanceState.getString(Constants.PASSWORD_TAG));
+            }
+            Log.d(Constants.TAG, "onCreate() method was invoked *with* a previous state");
+        }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        Log.d(Constants.TAG, "onDestroy() method was invoked");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        Log.d(Constants.TAG, "onStart() method was invoked");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        Log.d(Constants.TAG, "onRestart() method was invoked");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        Log.d(Constants.TAG, "onStop() method was invoked");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Log.d(Constants.TAG, "onResume() method was invoked");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        Log.d(Constants.TAG, "onPause() method was invoked");
+    }
 }
